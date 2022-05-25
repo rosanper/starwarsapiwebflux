@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class EquipmentRequest {
-    private String name;
-    private Integer quantity;
+    private Integer quantityOfWeapon;
+    private Integer quantityOfAmmunition;
+    private Integer quantityOfWater;
+    private Integer quantityOfFood;
 }

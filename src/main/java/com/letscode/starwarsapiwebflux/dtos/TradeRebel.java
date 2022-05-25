@@ -11,5 +11,5 @@ public class TradeRebel {
 
     private String rebelId;
 
-    private List<EquipmentRequest> equipmentRequests;
+    private EquipmentRequest equipmentRequests;
 }

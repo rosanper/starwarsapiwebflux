@@ -26,7 +26,7 @@ public class Rebel {
     private Integer qntAccusation;
     private Boolean isTraitor;
 
-    private List<EquipmentRequest> equipments = new ArrayList<>();
+    private EquipmentRequest equipments;
 
     private LocationRequest locations;
 

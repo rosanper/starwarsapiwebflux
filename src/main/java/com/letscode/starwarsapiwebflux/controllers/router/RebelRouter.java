@@ -21,7 +21,7 @@ public class RebelRouter {
                 .andRoute(DELETE("/rebels/{id}"),rebelHandler::deleteRebel)
                 .andRoute(PUT("/rebels/accuse/{id}"),rebelHandler::accuseRebel)
                 .andRoute(PUT("/rebels/update-location"),rebelHandler::updateLocation)
-                .andRoute(GET("/report"),rebelHandler::getReport)
+//                .andRoute(GET("/report"),rebelHandler::getReport)
                 ;
     }
 }

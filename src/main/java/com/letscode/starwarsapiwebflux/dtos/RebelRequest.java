@@ -11,7 +11,7 @@ public class RebelRequest {
     private Integer age;
     private String gender;
 
-    private List<EquipmentRequest> equipmentsRequest = new ArrayList<>();
+    private EquipmentRequest equipmentsRequest;
 
     private LocationRequest locationRequest;
 }

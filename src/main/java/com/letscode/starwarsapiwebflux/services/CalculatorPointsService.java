@@ -8,18 +8,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class CalculatorPointsService {
 
-    public int calculatorEquipmentPoints(EquipmentRequest equipment){
-        int points = equipment.getQuantity() * EquipmentsEnum.getPoints(equipment.getName());
-        return points;
-    }
-
-    public int calculatorRebelPoints(Rebel rebel){
-        int points = 0;
-        for (EquipmentRequest equipment : rebel.getEquipments()) {
-            points += calculatorEquipmentPoints(equipment);
-        }
-        return points;
-
-    }
+//    public int calculatorEquipmentPoints(EquipmentRequest equipment){
+//        int points = equipment.getQuantity() * EquipmentsEnum.getPoints(equipment.getName());
+//        return points;
+//    }
+//
+//    public int calculatorRebelPoints(Rebel rebel){
+//        int points = 0;
+//        for (EquipmentRequest equipment : rebel.getEquipments()) {
+//            points += calculatorEquipmentPoints(equipment);
+//        }
+//        return points;
+//
+//    }
 
 }
