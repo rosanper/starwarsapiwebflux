@@ -73,9 +73,9 @@ public class RebelHandler {
                         updateLocationMono.flatMap(locationService::updateLocation),Rebel.class));
     }
 
-//    public Mono<ServerResponse> getReport(ServerRequest request){
-//        return ServerResponse.ok()
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(reportService.getReport(), ReportResponse.class);
-//    }
+    public Mono<ServerResponse> getReport(ServerRequest request){
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(reportService.getReport(), ReportResponse.class);
+    }
 }

@@ -1,25 +1,23 @@
 package com.letscode.starwarsapiwebflux.services;
 
-import com.letscode.starwarsapiwebflux.dtos.EquipmentRequest;
+
 import com.letscode.starwarsapiwebflux.enums.EquipmentsEnum;
 import com.letscode.starwarsapiwebflux.models.Rebel;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CalculatorPointsService {
+    
+    public int calculatorRebelPoints(Rebel rebel){
+        int weaponPoints = rebel.getEquipments().getQuantityOfWeapon() * EquipmentsEnum.getPoints("Weapon");
+        int ammunitionPoints = rebel.getEquipments().getQuantityOfAmmunition()*EquipmentsEnum.getPoints("Ammunition");
+        int waterPoints = rebel.getEquipments().getQuantityOfWater() * EquipmentsEnum.getPoints("Water");
+        int foodPoints = rebel.getEquipments().getQuantityOfFood() * EquipmentsEnum.getPoints("Food");
 
-//    public int calculatorEquipmentPoints(EquipmentRequest equipment){
-//        int points = equipment.getQuantity() * EquipmentsEnum.getPoints(equipment.getName());
-//        return points;
-//    }
-//
-//    public int calculatorRebelPoints(Rebel rebel){
-//        int points = 0;
-//        for (EquipmentRequest equipment : rebel.getEquipments()) {
-//            points += calculatorEquipmentPoints(equipment);
-//        }
-//        return points;
-//
-//    }
+        int points = weaponPoints + ammunitionPoints + waterPoints + foodPoints;
+
+        return points;
+
+    }
 
 }
