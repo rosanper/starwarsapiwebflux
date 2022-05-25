@@ -2,6 +2,7 @@ package com.letscode.starwarsapiwebflux.services;
 
 import com.letscode.starwarsapiwebflux.dtos.EquipmentRequest;
 import com.letscode.starwarsapiwebflux.dtos.TradeRequest;
+import com.letscode.starwarsapiwebflux.exception.TradeException;
 import com.letscode.starwarsapiwebflux.models.Rebel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,21 +43,29 @@ public class TradeService {
         String idRebel1 = tradeRequest.getRebel1().getRebelId();
         String idRebel2 = tradeRequest.getRebel2().getRebelId();
 
-//        Rebel rebel1 = rebels.stream().filter(rebel -> rebel.getId() == idRebel1).findFirst().get();
-//        Rebel rebel2 = rebels.stream().filter(rebel -> rebel.getId() == idRebel2).findFirst().get();
-        Rebel rebel1 = new Rebel();
-        Rebel rebel2 = new Rebel();
+        Rebel rebel1 = rebels.stream().filter(rebel -> rebel.getId().equalsIgnoreCase(idRebel1))
+                .findFirst()
+                .orElseThrow(() -> new TradeException("Não foi possível localizar o rebelde com id" + idRebel1));
 
+        Rebel rebel2 = rebels.stream().filter(rebel -> rebel.getId().equalsIgnoreCase(idRebel2))
+                .findFirst()
+                .orElseThrow(() -> new TradeException("Não foi possível localizar o rebelde com id" + idRebel2));
+//        Rebel rebel1 = new Rebel();
+//        Rebel rebel2 = new Rebel();
+//
+//
+//        for (Rebel rebel : rebels) {
+//            if (rebel.getId().contains(idRebel1)) rebel1 = rebel;
+//            if (rebel.getId().contains(idRebel2)) rebel2 = rebel;
+//        }
 
-        for (Rebel rebel : rebels) {
-            if (rebel.getId().contains(idRebel1)) rebel1 = rebel;
-            if (rebel.getId().contains(idRebel2)) rebel2 = rebel;
-        }
+        //Verificar se é traidor
+        verifyTraitor(rebel1,rebel2);
 
 
         //verificar pontuação
         if (calculatorPointsService.calculatorEquipmentsPoints(equipmentToTradeRebel1) !=
-                calculatorPointsService.calculatorEquipmentsPoints(equipmentToTradeRebel2)) throw new RuntimeException();
+                calculatorPointsService.calculatorEquipmentsPoints(equipmentToTradeRebel2)) throw new TradeException("A troca não respeita a igualdade de pontuação.");
 
         //Troca
         int newQuantityOfWeaponRebel1 = rebel1.getEquipments().getQuantityOfWeapon() - equipmentToTradeRebel1.getQuantityOfWeapon();
@@ -65,7 +74,7 @@ public class TradeService {
         int newQuantityOfFoodRebel1 = rebel1.getEquipments().getQuantityOfFood() - equipmentToTradeRebel1.getQuantityOfFood();
 
         if (newQuantityOfWeaponRebel1 < 0 || newQuantityOfAmmunationRebel1 < 0 ||
-                newQuantityOfWaterRebel1 < 0 || newQuantityOfFoodRebel1 < 0) throw new RuntimeException();
+                newQuantityOfWaterRebel1 < 0 || newQuantityOfFoodRebel1 < 0) throw new TradeException("Não existe quantidade suficiente do item selecionado para a troca");
 
         int newQuantityOfWeaponRebel2 = rebel2.getEquipments().getQuantityOfWeapon() - equipmentToTradeRebel2.getQuantityOfWeapon();
         int newQuantityOfAmmunationRebel2 = rebel2.getEquipments().getQuantityOfAmmunition() - equipmentToTradeRebel2.getQuantityOfAmmunition();
@@ -73,7 +82,7 @@ public class TradeService {
         int newQuantityOfFoodRebel2 = rebel2.getEquipments().getQuantityOfFood() - equipmentToTradeRebel2.getQuantityOfFood();
 
         if (newQuantityOfWeaponRebel2 < 0 || newQuantityOfAmmunationRebel2 < 0 ||
-                newQuantityOfWaterRebel2 < 0 || newQuantityOfFoodRebel2 < 0) throw new RuntimeException();
+                newQuantityOfWaterRebel2 < 0 || newQuantityOfFoodRebel2 < 0) throw new TradeException("Não existe quantidade suficiente do item selecionado para a troca");
 
         newQuantityOfWeaponRebel1 += equipmentToTradeRebel2.getQuantityOfWeapon();
         newQuantityOfAmmunationRebel1 += equipmentToTradeRebel2.getQuantityOfAmmunition();
@@ -106,6 +115,12 @@ public class TradeService {
 
         return result;
 
+    }
+
+    public void verifyTraitor(Rebel rebel1, Rebel rebel2){
+        if(rebel1.getIsTraitor()== true || rebel2.getIsTraitor()== true){
+            throw new TradeException("pelo menos um dos rebeldes é um traidor");
+        }
     }
 
 
