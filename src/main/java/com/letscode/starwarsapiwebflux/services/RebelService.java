@@ -1,6 +1,7 @@
 package com.letscode.starwarsapiwebflux.services;
 
 import com.letscode.starwarsapiwebflux.dtos.RebelRequest;
+import com.letscode.starwarsapiwebflux.exception.NotFoundRebelException;
 import com.letscode.starwarsapiwebflux.models.Rebel;
 import com.letscode.starwarsapiwebflux.repositories.RebelRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,8 @@ public class RebelService {
     }
 
     public Mono<Rebel> findRebelById(String id){
-        return rebelsRepository.findById(id);
+        return rebelsRepository.findById(id)
+                .switchIfEmpty(Mono.error(new NotFoundRebelException("Não foi possível achar rebelde com o id"+id)));
     }
 
     public Mono<Void> deleteRebel(String id){

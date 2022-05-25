@@ -2,6 +2,7 @@ package com.letscode.starwarsapiwebflux.services;
 
 import com.letscode.starwarsapiwebflux.dtos.EquipmentRequest;
 import com.letscode.starwarsapiwebflux.dtos.TradeRequest;
+import com.letscode.starwarsapiwebflux.exception.NotFoundRebelException;
 import com.letscode.starwarsapiwebflux.exception.TradeException;
 import com.letscode.starwarsapiwebflux.models.Rebel;
 import lombok.RequiredArgsConstructor;
@@ -45,11 +46,11 @@ public class TradeService {
 
         Rebel rebel1 = rebels.stream().filter(rebel -> rebel.getId().equalsIgnoreCase(idRebel1))
                 .findFirst()
-                .orElseThrow(() -> new TradeException("Não foi possível localizar o rebelde com id" + idRebel1));
+                .orElseThrow(() -> new NotFoundRebelException("Não foi possível localizar o rebelde com id" + idRebel1));
 
         Rebel rebel2 = rebels.stream().filter(rebel -> rebel.getId().equalsIgnoreCase(idRebel2))
                 .findFirst()
-                .orElseThrow(() -> new TradeException("Não foi possível localizar o rebelde com id" + idRebel2));
+                .orElseThrow(() -> new NotFoundRebelException("Não foi possível localizar o rebelde com id" + idRebel2));
 //        Rebel rebel1 = new Rebel();
 //        Rebel rebel2 = new Rebel();
 //

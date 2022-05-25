@@ -21,4 +21,16 @@ public class RebelControlerAdvice {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
+
+    @ExceptionHandler(NotFoundRebelException.class)
+    public ResponseEntity<ExceptionMessage> notFoundError(NotFoundRebelException e){
+        ExceptionMessage errorMessage = ExceptionMessage.builder()
+                .timestamp(Instant.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Objeto não encontrado.")
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
 }
