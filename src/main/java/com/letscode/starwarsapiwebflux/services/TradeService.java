@@ -17,7 +17,7 @@ public class TradeService {
 
     private final RebelService rebelService;
 
-    private final CalculatorPointsService calculatorPointsService;
+    private final CalculatorPointsService calculator;
 
     public Flux<Rebel> tradeEquipments(TradeRequest tradeRequest){
         Flux<List<Rebel>> rebels = rebelService.getAllRebels().buffer();
@@ -64,8 +64,8 @@ public class TradeService {
 
 
         //verificar pontuação
-        if (calculatorPointsService.calculatorEquipmentsPoints(equipmentToTradeRebel1) !=
-                calculatorPointsService.calculatorEquipmentsPoints(equipmentToTradeRebel2)) throw new TradeException("A troca não respeita a igualdade de pontuação.");
+        if (calculator.calculatorEquipmentsPoints(equipmentToTradeRebel1) !=
+                calculator.calculatorEquipmentsPoints(equipmentToTradeRebel2)) throw new TradeException("A troca não respeita a igualdade de pontuação.");
 
         //Troca
         int newQuantityOfWeaponRebel1 = rebel1.getEquipments().getQuantityOfWeapon() - equipmentToTradeRebel1.getQuantityOfWeapon();

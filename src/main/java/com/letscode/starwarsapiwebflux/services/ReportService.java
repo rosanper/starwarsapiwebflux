@@ -27,13 +27,12 @@ public class ReportService {
         return report;
     }
 
-    public ResourceAverageResponse getAverageEquipment(List<Rebel> rebels, double totalRebels){
+    private ResourceAverageResponse getAverageEquipment(List<Rebel> rebels, double totalRebels){
         int quantityWeapon = 0;
         int quantityAmmunation = 0;
         int quantityWater = 0;
         int quantityFood = 0;
 
-        //TODO - Esta com problema, refazer
         for (Rebel rebel : rebels) {
             quantityWeapon += rebel.getEquipments().getQuantityOfWeapon();
             quantityAmmunation += rebel.getEquipments().getQuantityOfAmmunition();
@@ -55,7 +54,7 @@ public class ReportService {
                 .build();
     }
 
-    public ReportResponse createReport(List<Rebel> rebelsList){
+    private ReportResponse createReport(List<Rebel> rebelsList){
         List<Rebel> traitors = new ArrayList<>();
         List<Rebel> rebels = new ArrayList<>();
         List<Rebel> allRebels = rebelsList;
@@ -78,7 +77,9 @@ public class ReportService {
         double percentTraitors = (totalTraitors / total) * 100;
 
         //Pontos perdidos
-        int totalPointsTraitor = traitors.stream().mapToInt(rebel -> calculator.calculatorRebelPoints(rebel)).sum();
+        int totalPointsTraitor = traitors.stream()
+                .mapToInt(rebel -> calculator.calculatorEquipmentsPoints(rebel.getEquipments()))
+                .sum();
 
         //Media de equipamentos
         ResourceAverageResponse resourceAverageResponseDTO = getAverageEquipment(rebels, totalRebels);
