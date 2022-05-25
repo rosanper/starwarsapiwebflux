@@ -6,17 +6,109 @@ import com.letscode.starwarsapiwebflux.models.Rebel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class TradeService {
 
     private final RebelService rebelService;
+
+    private final CalculatorPointsService calculatorPointsService;
+
+    public Flux<Rebel> tradeEquipments(TradeRequest tradeRequest){
+        Flux<List<Rebel>> rebels = rebelService.getAllRebels().buffer();
+        return rebels.map(rebelList -> changeEquipments(rebelList,tradeRequest))
+                .flatMap(rebelList -> rebelService.saveRebelList(rebelList));
+
+    }
+
+//    flatMap(rebelList -> {
+//        Iterator<Rebel> iterator = rebelList.stream().iterator();
+//        while (iterator.hasNext()){
+//            rebelService.saveRebel(iterator.next());
+//        }
+//        return null;
+//    });
+
+
+
+    public List<Rebel> changeEquipments(List<Rebel> rebels, TradeRequest tradeRequest){
+        EquipmentRequest equipmentToTradeRebel1 = tradeRequest.getRebel1().getEquipmentRequests();
+        EquipmentRequest equipmentToTradeRebel2 = tradeRequest.getRebel2().getEquipmentRequests();
+
+        String idRebel1 = tradeRequest.getRebel1().getRebelId();
+        String idRebel2 = tradeRequest.getRebel2().getRebelId();
+
+//        Rebel rebel1 = rebels.stream().filter(rebel -> rebel.getId() == idRebel1).findFirst().get();
+//        Rebel rebel2 = rebels.stream().filter(rebel -> rebel.getId() == idRebel2).findFirst().get();
+        Rebel rebel1 = new Rebel();
+        Rebel rebel2 = new Rebel();
+
+
+        for (Rebel rebel : rebels) {
+            if (rebel.getId().contains(idRebel1)) rebel1 = rebel;
+            if (rebel.getId().contains(idRebel2)) rebel2 = rebel;
+        }
+
+
+        //verificar pontuação
+        if (calculatorPointsService.calculatorEquipmentsPoints(equipmentToTradeRebel1) !=
+                calculatorPointsService.calculatorEquipmentsPoints(equipmentToTradeRebel2)) throw new RuntimeException();
+
+        //Troca
+        int newQuantityOfWeaponRebel1 = rebel1.getEquipments().getQuantityOfWeapon() - equipmentToTradeRebel1.getQuantityOfWeapon();
+        int newQuantityOfAmmunationRebel1 = rebel1.getEquipments().getQuantityOfAmmunition() - equipmentToTradeRebel1.getQuantityOfAmmunition();
+        int newQuantityOfWaterRebel1 = rebel1.getEquipments().getQuantityOfWater() - equipmentToTradeRebel1.getQuantityOfWater();
+        int newQuantityOfFoodRebel1 = rebel1.getEquipments().getQuantityOfFood() - equipmentToTradeRebel1.getQuantityOfFood();
+
+        if (newQuantityOfWeaponRebel1 < 0 || newQuantityOfAmmunationRebel1 < 0 ||
+                newQuantityOfWaterRebel1 < 0 || newQuantityOfFoodRebel1 < 0) throw new RuntimeException();
+
+        int newQuantityOfWeaponRebel2 = rebel2.getEquipments().getQuantityOfWeapon() - equipmentToTradeRebel2.getQuantityOfWeapon();
+        int newQuantityOfAmmunationRebel2 = rebel2.getEquipments().getQuantityOfAmmunition() - equipmentToTradeRebel2.getQuantityOfAmmunition();
+        int newQuantityOfWaterRebel2 = rebel2.getEquipments().getQuantityOfWater() - equipmentToTradeRebel2.getQuantityOfWater();
+        int newQuantityOfFoodRebel2 = rebel2.getEquipments().getQuantityOfFood() - equipmentToTradeRebel2.getQuantityOfFood();
+
+        if (newQuantityOfWeaponRebel2 < 0 || newQuantityOfAmmunationRebel2 < 0 ||
+                newQuantityOfWaterRebel2 < 0 || newQuantityOfFoodRebel2 < 0) throw new RuntimeException();
+
+        newQuantityOfWeaponRebel1 += equipmentToTradeRebel2.getQuantityOfWeapon();
+        newQuantityOfAmmunationRebel1 += equipmentToTradeRebel2.getQuantityOfAmmunition();
+        newQuantityOfWaterRebel1 += equipmentToTradeRebel2.getQuantityOfWater();
+        newQuantityOfFoodRebel1 += equipmentToTradeRebel2.getQuantityOfFood();
+
+        newQuantityOfWeaponRebel2 += equipmentToTradeRebel1.getQuantityOfWeapon();
+        newQuantityOfAmmunationRebel2 += equipmentToTradeRebel1.getQuantityOfAmmunition();
+        newQuantityOfWaterRebel2 += equipmentToTradeRebel1.getQuantityOfWater();
+        newQuantityOfFoodRebel2 += equipmentToTradeRebel1.getQuantityOfFood();
+
+        EquipmentRequest newEquipmentRebel1 = new EquipmentRequest(
+                newQuantityOfWeaponRebel1,
+                newQuantityOfAmmunationRebel1,
+                newQuantityOfWaterRebel1,
+                newQuantityOfFoodRebel1);
+
+        EquipmentRequest newEquipmentRebel2 = new EquipmentRequest(
+                newQuantityOfWeaponRebel2,
+                newQuantityOfAmmunationRebel2,
+                newQuantityOfWaterRebel2,
+                newQuantityOfFoodRebel2);
+
+        rebel1.setEquipments(newEquipmentRebel1);
+        rebel2.setEquipments(newEquipmentRebel2);
+
+        List<Rebel> result = new ArrayList<>();
+        result.add(rebel1);
+        result.add(rebel2);
+
+        return result;
+
+    }
+
+
 
 // TODO - refazer lógica
 

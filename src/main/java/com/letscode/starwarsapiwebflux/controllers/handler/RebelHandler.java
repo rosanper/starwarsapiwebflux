@@ -2,12 +2,10 @@ package com.letscode.starwarsapiwebflux.controllers.handler;
 
 import com.letscode.starwarsapiwebflux.dtos.RebelRequest;
 import com.letscode.starwarsapiwebflux.dtos.ReportResponse;
+import com.letscode.starwarsapiwebflux.dtos.TradeRequest;
 import com.letscode.starwarsapiwebflux.dtos.UpdateLocation;
 import com.letscode.starwarsapiwebflux.models.Rebel;
-import com.letscode.starwarsapiwebflux.services.AccuseService;
-import com.letscode.starwarsapiwebflux.services.LocationService;
-import com.letscode.starwarsapiwebflux.services.RebelService;
-import com.letscode.starwarsapiwebflux.services.ReportService;
+import com.letscode.starwarsapiwebflux.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +26,8 @@ public class RebelHandler {
     private final LocationService locationService;
 
     private final ReportService reportService;
+
+    private final TradeService tradeService;
 
     public Mono<ServerResponse> getAllRebels(ServerRequest request){
         return ServerResponse.ok()
@@ -78,4 +78,5 @@ public class RebelHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(reportService.getReport(), ReportResponse.class);
     }
+
 }

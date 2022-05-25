@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RebelService {
@@ -33,5 +35,10 @@ public class RebelService {
 
     public Mono<Rebel>  saveRebel(Rebel rebel){
         return rebelsRepository.save(rebel);
+    }
+
+    public Flux<Rebel> saveRebelList(List<Rebel> rebels){
+        Flux<Rebel> rebelFlux = rebelsRepository.saveAll(rebels);
+        return rebelFlux;
     }
 }
